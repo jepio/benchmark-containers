@@ -8,7 +8,7 @@ COPY --from=dstat-builder /dstat/dstat /usr/local/bin
 COPY --from=dstat-builder /dstat/plugins /usr/local/bin/
 
 # lscpu
-RUN apt-get update && apt-get install libc6-lse  util-linux
+RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y libc6-lse  util-linux
 
 # Common script
 COPY cpu.sh /usr/local/bin/cpu.sh

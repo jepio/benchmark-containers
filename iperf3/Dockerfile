@@ -2,7 +2,7 @@ FROM ubuntu:20.04 as builder
 WORKDIR /usr/src/iperf
 ENV IPERF_VER=3.7
 ADD  https://github.com/esnet/iperf/archive/${IPERF_VER}.tar.gz .
-RUN apt-get update && apt-get install libc6-lse build-essential libtool autoconf automake openssl-dev
+RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y libc6-lse build-essential libtool autoconf automake libssl-dev
 RUN tar xzf ${IPERF_VER}.tar.gz && \
     cd iperf-${IPERF_VER} && \
     ./bootstrap.sh && \
@@ -13,11 +13,11 @@ FROM benchmark-base
 MAINTAINER Kinvolk
 
 # iperf3
-RUN apt-get update && apt-get install libc6-lse  openssl
+RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y libc6-lse  openssl
 COPY --from=builder /iperf3/ /
 
 # The benchmark uses jq to parse the JSON output
-RUN apt-get update && apt-get install libc6-lse  jq
+RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y libc6-lse  jq
 
 # Runnable scripts
 COPY run-benchmark.sh /usr/local/bin/run-benchmark.sh

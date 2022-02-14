@@ -3,7 +3,7 @@ LABEL maintainer="Kinvolk"
 WORKDIR /usr/src/memcached
 ENV MEMCACHE_VER=1.6.9
 ADD https://github.com/memcached/memcached/archive/${MEMCACHE_VER}.tar.gz .
-RUN apt-get update && apt-get install libc6-lse build-essential autoconf automake pcre-dev libevent-dev zlib-dev linux-headers openssl-dev
+RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y libc6-lse build-essential autoconf automake libpcre3-dev libevent-dev libz-dev linux-headers-generic libssl-dev pkg-config
 RUN tar xzf ${MEMCACHE_VER}.tar.gz &&\
     cd memcached-${MEMCACHE_VER} && \
     ./autogen.sh && \
@@ -33,11 +33,11 @@ FROM benchmark-base
 LABEL maintainer="Kinvolk"
 
 # memcached, redis, memtier
-RUN apt-get update && apt-get install libc6-lse  pcre libevent zlib so:libstdc++.so.6 so:libgcc_s.so.1 curl jq
+RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y libc6-lse  libpcre3 libevent-2.1 libevent-*-2.1 zlib1g libstdc++6 libgcc-s1 curl jq
 COPY --from=builder /memcached/ /
 COPY --from=builder /redis/ /
 COPY --from=builder /memtier/ /
-RUN adduser -u 1000 -D benchmark
+RUN useradd -m -u 1000 benchmark
 
 # Runnable scripts
 COPY run-benchmark.sh /usr/local/bin/run-benchmark.sh

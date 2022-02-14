@@ -1,7 +1,7 @@
 FROM ubuntu:20.04 as builder
 WORKDIR /usr/src
-RUN apt-get update && apt-get install libc6-lse build-essential zlib-dev openssl-dev wget lua lua-dev luarocks
-RUN luarocks-5.1 install luasocket
+RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y libc6-lse build-essential libz-dev libssl-dev wget lua5.1 liblua5.1-dev luarocks
+RUN luarocks install luasocket
 ADD https://github.com/kinvolk/wrk2/archive/master.zip .
 RUN unzip master.zip && cp -R wrk2-master/ /usr/src/wrk2-cache-stresser/
 
@@ -14,7 +14,7 @@ FROM benchmark-base
 LABEL maintainer="Kinvolk"
 
 # ab && wrk2
-RUN apt-get update && apt-get install libc6-lse  apache2-utils so:libcrypto.so.1.1 so:libssl.so.1.1 so:libgcc_s.so.1 curl nginx expect util-linux
+RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y libc6-lse  apache2-utils libssl1.1 libgcc-s1 curl nginx expect util-linux
 COPY --from=builder /usr/src/wrk2-cache-stresser/wrk /usr/local/bin/
 COPY --from=builder /usr/local/lib/lua/ /usr/local/lib/lua/
 COPY --from=builder /usr/local/share/lua/ /usr/local/share/lua/
