@@ -1,6 +1,6 @@
-FROM alpine as builder
+FROM ubuntu:20.04 as builder
 WORKDIR /usr/src
-RUN apk add --update alpine-sdk zlib-dev openssl-dev wget lua lua-dev luarocks
+RUN apt-get update && apt-get install libc6-lse build-essential zlib-dev openssl-dev wget lua lua-dev luarocks
 RUN luarocks-5.1 install luasocket
 ADD https://github.com/kinvolk/wrk2/archive/master.zip .
 RUN unzip master.zip && cp -R wrk2-master/ /usr/src/wrk2-cache-stresser/
@@ -14,7 +14,7 @@ FROM benchmark-base
 LABEL maintainer="Kinvolk"
 
 # ab && wrk2
-RUN apk add --update --no-cache apache2-utils so:libcrypto.so.1.1 so:libssl.so.1.1 so:libgcc_s.so.1 curl nginx expect util-linux
+RUN apt-get update && apt-get install libc6-lse  apache2-utils so:libcrypto.so.1.1 so:libssl.so.1.1 so:libgcc_s.so.1 curl nginx expect util-linux
 COPY --from=builder /usr/src/wrk2-cache-stresser/wrk /usr/local/bin/
 COPY --from=builder /usr/local/lib/lua/ /usr/local/lib/lua/
 COPY --from=builder /usr/local/share/lua/ /usr/local/share/lua/

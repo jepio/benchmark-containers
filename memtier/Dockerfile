@@ -1,9 +1,9 @@
-FROM alpine as builder
+FROM ubuntu:20.04 as builder
 LABEL maintainer="Kinvolk"
 WORKDIR /usr/src/memcached
 ENV MEMCACHE_VER=1.6.9
 ADD https://github.com/memcached/memcached/archive/${MEMCACHE_VER}.tar.gz .
-RUN apk add --update alpine-sdk autoconf automake pcre-dev libevent-dev zlib-dev linux-headers openssl-dev
+RUN apt-get update && apt-get install libc6-lse build-essential autoconf automake pcre-dev libevent-dev zlib-dev linux-headers openssl-dev
 RUN tar xzf ${MEMCACHE_VER}.tar.gz &&\
     cd memcached-${MEMCACHE_VER} && \
     ./autogen.sh && \
@@ -33,7 +33,7 @@ FROM benchmark-base
 LABEL maintainer="Kinvolk"
 
 # memcached, redis, memtier
-RUN apk add --update --no-cache pcre libevent zlib so:libstdc++.so.6 so:libgcc_s.so.1 curl jq
+RUN apt-get update && apt-get install libc6-lse  pcre libevent zlib so:libstdc++.so.6 so:libgcc_s.so.1 curl jq
 COPY --from=builder /memcached/ /
 COPY --from=builder /redis/ /
 COPY --from=builder /memtier/ /

@@ -8,7 +8,7 @@ MAINTAINER Kinvolk
 COPY --from=builder /go/bin/fortio /usr/local/bin/fortio
 
 # The benchmark uses jq to parse the JSON output
-RUN apk add --update --no-cache jq
+RUN apt-get update && apt-get install libc6-lse  jq
 
 # Runnable scripts
 COPY run-benchmark.sh /usr/local/bin/run-benchmark.sh
