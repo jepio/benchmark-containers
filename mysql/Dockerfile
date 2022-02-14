@@ -3,7 +3,8 @@ FROM centos:7
 
 LABEL maintainer="Kinvolk"
 
-RUN yum install -y https://repo.mysql.com/mysql-community-release-el7.rpm && \
+RUN rpm --import https://repo.mysql.com/RPM-GPG-KEY-mysql-2022 && \
+    yum install -y https://repo.mysql.com/mysql-community-release-el7.rpm && \
     yum install -y epel-release && \
     yum install -y mysql mysql-server jq psmisc && \
     curl -s https://packagecloud.io/install/repositories/akopytov/sysbench/script.rpm.sh | bash && \

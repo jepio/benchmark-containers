@@ -25,6 +25,9 @@ docker build -t dstat-builder "${build_root}/dstat"
 echo "############# Building base container ###############"
 docker build -t benchmark-base "${build_root}/common"
 
+echo "############# Building base container (centos) ###############"
+docker build -t benchmark-base-centos -f "${build_root}/common/Dockerfile.centos" "${build_root}/common"
+
 echo "#############  Building: $targets  ###############"
 
 for t in $targets; do
